@@ -1,14 +1,18 @@
-import { getRandomNum, flipVector, makeWobbly } from "./functions.js"
+import { getRandomNum, weightedRandom, flipVector, makeWobbly } from "./functions.js"
 
-export function Head(origin, ref) {
+export function Head(origin, ref, fills) {
 	this.origin = origin
-	this.width = getRandomNum(0.75 * ref, 0.9 * ref)/2
-	this.height = getRandomNum(0.4 * ref, 0.7 * ref)/2
+	this.width = getRandomNum(0.8 * ref, ref)/2
+	this.height = getRandomNum(0.4 * ref, 0.75 * ref)/2
+	this.fill = weightedRandom(fills)
+	if (this.fill == "black") {this.stroke = "white"}
+	else {this.stroke = "black"}
+	this.faceVector = new paper.Point(getRandomNum(-this.width * 0.1, this.width * 0.1), getRandomNum(0, -this.height * 0.2))
 
 	this.line = new paper.Path();
 	this.line.style = {
-        fillColor: "white",
-        strokeColor: "black",
+        fillColor: this.fill,
+        strokeColor: this.stroke,
         strokeWidth: 2
     }
 
@@ -25,8 +29,8 @@ export function Head(origin, ref) {
 	this.p3HandleIn = new paper.Point(this.p3HandleInLength, 0)
 	this.p3HandleOut = new paper.Point(-this.p3HandleOutLength, 0)
 
-	this.p2HandleInLength = this.p4HandleOutLength = getRandomNum(this.height * 0.2, this.height)
-	this.p4HandleInLength = this.p2HandleOutLength = getRandomNum(this.height * 0.4, this.height)
+	this.p2HandleInLength = this.p4HandleOutLength = getRandomNum(this.height * 0.4, this.height)
+	this.p4HandleInLength = this.p2HandleOutLength = getRandomNum(this.height * 0.6, this.height)
 
 	this.p2HandleOut = this.p3HandleIn.subtract(this.p1HandleOut.add([0, this.height*2]))
 	this.p2HandleOut.length = this.p2HandleOutLength
@@ -44,7 +48,9 @@ export function Head(origin, ref) {
 	this.line.add(this.s1, this.s2, this.s3, this.s4);
 	this.line.closed = true
 	// this.line.fullySelected = true
-	// this.line = makeWobbly(this.line, 15, 0.6, 1)
+	if (weightedRandom([true, false], [0, 100]) == true) {
+		this.line = makeWobbly(this.line, 15, 0.6, 1)
+	}
 
 	this.lines = [this.line]
 }

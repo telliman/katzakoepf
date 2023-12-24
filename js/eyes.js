@@ -1,35 +1,35 @@
 import { getRandomNum} from "./functions.js"
 
 export function Eyes(head, ref) {
-	this.width = getRandomNum(0.16 * ref, 0.20 * ref)/2
-	this.height = getRandomNum(0.04 * ref, 0.5 * this.width*2)/2
-    let eyeDistance = getRandomNum(this.width * 1.5 + 0.2 * ref, 0.4 * ref)
-	this.origin = head.origin.add([-eyeDistance/2, -20])
-    this.mirrorPoint = head.origin
+	this.width = getRandomNum(0.15 * ref, 0.22 * ref)/2
+	this.height = getRandomNum(0.05 * ref, 0.5 * this.width*2)/2
+    let eyeDistance = getRandomNum(this.width * 2 + 0.2 * ref, 0.35 * ref)
+	this.origin = head.origin.add([-eyeDistance/2, -20]).add(head.faceVector)
+
+    let eyeDistance2 = eyeDistance - (head.faceVector.x * 0.2)
 
     this.lines = []
 
-    let eyeballs = Eyeballs(this.origin, this.width, this.height, this.mirrorPoint)
+    let eyeballs = Eyeballs(this.origin, this.width, this.height, eyeDistance2)
     for (let i = 0; i < eyeballs.length; i++) {
         this.lines.push(eyeballs[i])
     }
 
     this.pupilOrigin = this.origin
-    this.pupilWidth = getRandomNum(0.015 * ref, 0.03 * ref, 1)/2
-    this.pupilHeight = getRandomNum(0.015 * ref, 0.07 * ref, 1)/2
+    this.pupilWidth = getRandomNum(0.02 * ref, 0.04 * ref, 1)/2
+    this.pupilHeight = getRandomNum(0.02 * ref, 0.08 * ref, 1)/2
     if (this.pupilHeight < this.pupilWidth) {
         this.pupilHeight = this.pupilWidth
     }
     this.pupilOrigin = this.origin.add(getRandomNum(-this.width/3, this.width/3), getRandomNum(-this.height/2, 0))
 
-    let pupils = Pupils(this.pupilOrigin, this.pupilWidth, this.pupilHeight, eyeballs, eyeDistance)
+    let pupils = Pupils(this.pupilOrigin, this.pupilWidth, this.pupilHeight, eyeballs, eyeDistance2)
     for (let i = 0; i < pupils.length; i++) {
         this.lines.push(pupils[i])
-        console.log(pupils[i])
     }
 }
 
-function Eyeballs(origin, width, height, mirror) {
+function Eyeballs(origin, width, height, distance) {
 
 	let line = new paper.Path();
 	line.style = {
@@ -46,7 +46,7 @@ function Eyeballs(origin, width, height, mirror) {
     let p1HandleIn, p1HandleOut, p3HandleOut, p3HandleIn;
 	p1HandleIn = p1HandleOut = p3HandleOut = p3HandleIn = getRandomNum(0.4 * width, width * 2/3)
     let p4HandleOut, p2HandleIn, p2HandleOut, p4HandleIn;
-	p4HandleOut = p2HandleIn = p2HandleOut = p4HandleIn = getRandomNum(0.1 * height, height * 2/3)
+	p4HandleOut = p2HandleIn = p2HandleOut = p4HandleIn = getRandomNum(0.15 * height, height * 0.8)
 	
 	let s1 = new paper.Segment(p1, [-p1HandleIn,0], [p1HandleOut, 0])
 	let s2 = new paper.Segment(p2, [0, p2HandleIn], [0, -p2HandleOut])
@@ -56,8 +56,8 @@ function Eyeballs(origin, width, height, mirror) {
 	line.closed = true
 	// line.fullySelected = true
 	line.rotate(5, origin)
-	let line2 = line.clone()
-	line2.scale(-1, 1, mirror)
+	let line2 = line.clone().scale(-1, 1, origin)
+	line2.translate([distance, 0])
 
     let lines = [line, line2]
     return lines

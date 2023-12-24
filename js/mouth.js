@@ -1,10 +1,13 @@
 import { getRandomNum, weightedRandom, flipVector, flipVectorH } from "./functions.js"
 
-export var Mouth = function(head, nose, ref) {
-	this.height = getRandomNum(0.15 * ref, 0.4 * ref)/2
+export var Mouth = function(head, nose, ref, fills) {
+	this.height = getRandomNum(0.15 * ref, 0.5 * ref)/2
     this.width = getRandomNum(0.5 * this.height, 1 * this.height)/2
 	this.origin = nose.origin
-	this.mirrorPoint = head.origin
+	this.mirrorPoint = this.origin
+	if (head.fill == "black") {this.stroke = "white"}
+	else {this.stroke = "black"}
+	this.fill = weightedRandom(fills.filter((el) => el != this.stroke))
 
 	let variations = ["Grumpy", "Snout"]
 	let weights = [50, 50]
@@ -12,7 +15,7 @@ export var Mouth = function(head, nose, ref) {
 	let variation = weightedRandom(variations, weights)
 
 	this.lines = []
-	let temp = eval(variation)(this.origin, this.width, this.height, this.mirrorPoint)
+	let temp = eval(variation)(this.origin, this.width, this.height, this.mirrorPoint, this.fill, this.stroke)
     for (let i = 0; i < temp.length; i++) {
 		if (temp[i].subtract(nose.lines[0])) {
 			if (temp[i].closed == true) {
@@ -28,11 +31,11 @@ export var Mouth = function(head, nose, ref) {
     }
 }
 
-function Snout(origin, width, height, mirror) {
+function Snout(origin, width, height, mirror, fill, stroke) {
     let line = new paper.Path();
 	line.style = {
-        fillColor: "pink",
-        strokeColor: "black",
+        fillColor: fill,
+        strokeColor: stroke,
         strokeWidth: 2
     }
 
@@ -58,7 +61,7 @@ function Snout(origin, width, height, mirror) {
     return lines
 }
 
-function Grumpy(origin, width, height, mirror) {
+function Grumpy(origin, width, height, mirror, fill, stroke) {
 
 	let p2 = origin.add([0, height * 0.7])
 
@@ -66,7 +69,7 @@ function Grumpy(origin, width, height, mirror) {
     let line2 = new paper.Path();
 	line.style = line2.style = {
         fillColor: null,
-        strokeColor: "black",
+        strokeColor: stroke,
         strokeWidth: 2
     }
 

@@ -4,19 +4,26 @@ export function getRandomNum(min, max, decimal = 0) {
 	return Math.floor((Math.random() * (max - min) + min) * 10**decimal)/(10**decimal); // The maximum is inclusive and the minimum is inclusive
   }
 
-export function weightedRandom(items, weights) {
+export function weightedRandom(items, weights = false) {
     var i;
 
-    for (i = 1; i < weights.length; i++)
+	if (weights == false) {
+		return items[Math.floor(Math.random()*items.length)]
+	}
+
+	else {
+		for (i = 1; i < weights.length; i++)
         weights[i] += weights[i - 1];
     
-    var random = Math.random() * weights[weights.length - 1];
+    	var random = Math.random() * weights[weights.length - 1];
     
-    for (i = 0; i < weights.length; i++)
-        if (weights[i] > random)
-            break;
+    	for (i = 0; i < weights.length; i++)
+       		if (weights[i] > random)
+        		break;
     
-    return items[i];
+    	return items[i];
+	}
+
 }
 
 export function distance(point1, point2) {
@@ -39,11 +46,7 @@ export function flipVectorV(vector) {
 	return flipped
 }
 
-export function makeWobbly(path, numberOfWaves, wobbliness, pathLocation, randomizeSectionLength, intervals) {
-	randomizeSectionLength = typeof randomizeSectionLength !== "undefined" ? randomizeSectionLength : 0.3;
-	wobbliness = typeof wobbliness !== "undefined" ? wobbliness : 0.5;
-	pathLocation = typeof pathLocation !== "undefined" ? pathLocation : 0.5;
-	intervals = typeof intervals !== "undefined" ? intervals : [[0, 1]];
+export function makeWobbly(path, numberOfWaves, wobbliness = 0.5, pathLocation = 0.5, randomizeSectionLength = 0.3, intervals = [[0, 1]]) {
 
 	var numberOfSections = numberOfWaves * 2
 	var sectionLength = path.length/numberOfSections
@@ -71,10 +74,6 @@ export function makeWobbly(path, numberOfWaves, wobbliness, pathLocation, random
 		var point = path.getPointAt(offset)
 		var normal = path.getNormalAt(offset)
 		point = point.subtract(normal.multiply((strength * pathLocation)))
-        console.log(pathLocation)
-        console.log(normal, 1)
-        console.log(normal.multiply(strength * pathLocation), 2)
-		newPath.add(point)
 
 		Switch *= -1
 		pathLocation += Switch
@@ -105,7 +104,17 @@ export function makeWobbly(path, numberOfWaves, wobbliness, pathLocation, random
 		sizeIndex += Switch
 	}
 
-	// newPath.fullySelected = true
+	newPath.fullySelected = true
 
 	return newPath
+}
+
+export function saveAsSVG() {
+	var downloadLink = document.getElementById('saveSVG')
+	var svgString = paper.project.exportSVG({asString:true})
+	var url = URL.createObjectURL(new Blob([svgString], {
+			type: 'image/svg+xml'
+		}));
+	downloadLink.href = url
+	downloadLink.download = 'katzakopf.svg';
 }

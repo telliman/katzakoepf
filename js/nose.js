@@ -1,25 +1,28 @@
 import { getRandomNum, weightedRandom, flipVector } from "./functions.js"
 
-export function Nose(head, ref) {
-	this.origin = head.origin.add([0, getRandomNum(-ref * 0.04, ref * 0.04)-20])
-	this.width = getRandomNum(0.03 * ref, 0.07 * ref)/2
+export function Nose(head, ref, fills) {
+	this.origin = head.origin.add([0, getRandomNum(-ref * 0.05, ref * 0.03)-20]).add(head.faceVector)
+	this.width = getRandomNum(0.04 * ref, 0.07 * ref)/2
 	this.height = getRandomNum(0.03 * ref, 0.05 * ref)/2
+	if (head.fill == "black") {this.stroke = "white"}
+	else {this.stroke = "black"}
+	this.fill = weightedRandom(fills.filter((el) => el != "white"))
 
 	let variations = ["Almond", "Heart"]
 	let weights = [0, 100]
 	
 	let variation = weightedRandom(variations, weights)
 
-	let temp = eval(variation)(this.origin, this.width, this.height, this.mirrorPoint)
+	let temp = eval(variation)(this.origin, this.width, this.height, this.mirrorPoint, this.fill, this.stroke)
 
     this.lines = [temp]
 }
 
-function Almond(origin, width, height, mirror) {
+function Almond(origin, width, height, mirror, fill, stroke) {
 	let line = new paper.Path();
 	line.style = {
-        fillColor: "black",
-        strokeColor: "black",
+        fillColor: fill,
+        strokeColor: stroke,
         strokeWidth: 2
     }
 
@@ -63,11 +66,11 @@ function Almond(origin, width, height, mirror) {
 	return line
 }
 
-function Heart(origin, width, height, mirror) {
+function Heart(origin, width, height, mirror, fill, stroke) {
 	let line = new paper.Path();
 	line.style = {
-        fillColor: "black",
-        strokeColor: "black",
+        fillColor: fill,
+        strokeColor: stroke,
         strokeWidth: 2
     }
 
