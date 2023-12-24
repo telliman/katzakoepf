@@ -1,0 +1,28 @@
+canvas {
+    height: 100%;
+    max-height: 80vh;
+    width: 100%;
+    max-width: 80vh;
+    display: block;
+    background-color: rgb(220, 220, 220);
+    margin: auto;
+    padding: 0;
+    border: 0px solid black;
+}
+
+.button {
+    font-size: 16px;
+    background-color: #192655;
+    border: none; /*2px solid white*/
+    border-radius: 18px;
+    color: white;
+    padding: 10px 20px;
+    text-align: center;
+    opacity: 0.7;
+    transition: 0.3s;
+    display: inline-block;
+    text-decoration: none;
+    cursor: pointer;
+  }
+  
+  .button:hover {opacity: 1}
